@@ -37,8 +37,6 @@ graph.bind("foaf", foaf)
 dct = rdflib.Namespace("http://purl.org/dc/terms/")
 graph.bind("dct", dct)
 
-txt = open("code4lib.ttl").read()
-
 def twitter_uri(screen_name):
     return rdflib.URIRef("http://twitter.com/" + screen_name)
 
