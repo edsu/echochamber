@@ -59,6 +59,8 @@ def id2uri(id):
     return graph.value(None, sioc.id, rdflib.Literal(id))
 
 def check_rate_limit():
+    # TODO: probably should keep track of remaining requests
+    # rather than constantly pinging the service
     rl = api.rate_limit_status()
     if rl["remaining_hits"] == 0:
         reset_time = rl["reset_time_in_seconds"]
