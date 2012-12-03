@@ -3,7 +3,7 @@
 """
 This script takes a seed Twitter username and captures
 the relations between its followers, and saves them off
-as a FOAF RDF file.
+as RDF using SIOC and FOAF.
 
 You'll need to set the following environment variables:
 
@@ -34,8 +34,6 @@ graph = rdflib.Graph("Sleepycat", identifier="twitter_user")
 graph.open("store", create=True)
 foaf = rdflib.Namespace("http://xmlns.com/foaf/0.1/")
 graph.bind("foaf", foaf)
-dct = rdflib.Namespace("http://purl.org/dc/terms/")
-graph.bind("dct", dct)
 sioc = rdflib.Namespace("http://rdfs.org/sioc/ns#")
 g.bind("sioc", sioc)
 
