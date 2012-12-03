@@ -1,2 +1,3 @@
 rdflib
 tweepy
+git+https://github.com/RDFLib/rdflib-jsonld.git
