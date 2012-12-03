@@ -1,0 +1,105 @@
+<html>
+    <head>
+        <title>httpRange-14 discussion</title>
+        <style>
+            header {
+                text-align: center;
+            }
+
+            #chart {
+                border: 2px solid #cccccc;
+                width: 1000px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            #about {
+                width: 1000px; 
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+
+            .node text {
+                pointer-events: none;
+                font: 10px sans-serif;
+            }
+
+        </style>
+        <link rel="alternate" href="graph.ttl" type="text/turtle"></link>
+        <link rel="alternate" href="graph.json" type="application/json"></link>
+        <script src="http://d3js.org/d3.v2.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+
+        <script>
+            $(document).ready(init);
+
+            function init() {
+                var height = 1000;
+                var width = 1000;
+
+                var color = d3.scale.category10();
+
+                var force = d3.layout.force()
+                    //.charge(-150)
+                    .linkStrength(.5)
+                    .gravity(0.5)
+                    .linkDistance(400)
+                    .size([width, height]);
+
+                var svg = d3.select("#chart").append("svg")
+                    .attr("width", width)
+                    .attr("height", height)
+                
+                d3.json("d3.json", function(json) {
+                    force
+                        .nodes(json.nodes)
+                        .links(json.links)
+                        .start();
+
+                    var link = svg.selectAll("line.link")
+                        .data(json.links)
+                        .enter().append("line")
+                        .attr("class", "link")
+                        .style("stroke", "#111")
+                        .style("stroke-width", .4);
+
+                    var node = svg.selectAll(".node")
+                        .data(json.nodes)
+                      .enter().append("circle")
+                        .attr("class", "node")
+                        .attr("r", function(d) {return 3 + .1 * d.followerCount})
+                        .style("fill", function(d) {
+                            return "#777";
+                        })
+                        .call(force.drag)
+                        .on("mouseover", function() {force.stop();})
+                        .on("mouseout", function() {force.start();});
+
+                    node.append("title")
+                        .text(function(d) {return d.username + " " + d.weight});
+                    
+                    force.on("tick", function() {
+                        link.attr("x1", function(d) {return d.source.x})
+                            .attr("y1", function(d) {return d.source.y})
+                            .attr("x2", function(d) {return d.target.x})
+                            .attr("y2", function(d) {return d.target.y});
+
+                        node.attr("cx", function(d) {return d.x;})
+                            .attr("cy", function(d) {return d.y;})
+                    });
+                    
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <header><h1></h1></header>
+        <a href="http://github.com/edsu/rage14"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub" /></a> 
+        <div id="about">
+            <p></p>
+        </div>
+        <div id="chart"></div>
+    </body>
+</html>
