@@ -3332,11 +3332,6 @@
     sioc:id 62234806;
     sioc:name "jan_waterhouse" .
 
-<http://twitter.com/janice_childers> a sioc:UserAccount;
-    sioc:account_of [ foaf:name "jchilders" ];
-    sioc:id 25300436;
-    sioc:name "janice_childers" .
-
 <http://twitter.com/jastirn> a sioc:UserAccount;
     sioc:account_of [ foaf:homepage <http://wire.jstirnaman.com>;
             foaf:name "Jason Stirnaman" ];
@@ -4413,6 +4408,11 @@
             foaf:name "Kevin Clair" ];
     sioc:id 5432932;
     sioc:name "jackflaps" .
+
+<http://twitter.com/janice_childers> a sioc:UserAccount;
+    sioc:account_of [ foaf:name "jchilders" ];
+    sioc:id 25300436;
+    sioc:name "janice_childers" .
 
 <http://twitter.com/jessejsaunders> a sioc:UserAccount;
     sioc:account_of [ foaf:homepage <http://www.jessejsaunders.com>;
@@ -9210,11 +9210,6 @@
     sioc:id 13370042;
     sioc:name "janellezed" .
 
-<http://twitter.com/jenfoolery> a sioc:UserAccount;
-    sioc:account_of [ foaf:name "Jenny Reiswig" ];
-    sioc:id 7120992;
-    sioc:name "jenfoolery" .
-
 <http://twitter.com/leonnea> a sioc:UserAccount;
     sioc:account_of [ foaf:homepage <http://leonnea.com>;
             foaf:name "Linnea Johnson" ];
@@ -9401,6 +9396,11 @@
     sioc:id 14338221;
     sioc:name "infod1va" .
 
+<http://twitter.com/jenfoolery> a sioc:UserAccount;
+    sioc:account_of [ foaf:name "Jenny Reiswig" ];
+    sioc:id 7120992;
+    sioc:name "jenfoolery" .
+
 <http://twitter.com/ldirks> a sioc:UserAccount;
     sioc:account_of [ foaf:homepage <http://microsoft.com/scholarlycomm>;
             foaf:name "Lee Dirks" ];
@@ -9514,6 +9514,7 @@
         <http://twitter.com/infod1va>,
         <http://twitter.com/jaclark>,
         <http://twitter.com/james3neal>,
+        <http://twitter.com/jenfoolery>,
         <http://twitter.com/jenlrile>,
         <http://twitter.com/john_little>,
         <http://twitter.com/jshira09>,
@@ -11595,6 +11596,7 @@
         <http://twitter.com/infoflux>,
         <http://twitter.com/infosoph>,
         <http://twitter.com/james3neal>,
+        <http://twitter.com/janice_childers>,
         <http://twitter.com/jberzowska>,
         <http://twitter.com/jefferson_bail>,
         <http://twitter.com/joan_starr>,
