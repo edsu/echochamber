@@ -67,16 +67,22 @@ def check_rate_limit():
         time.sleep(secs)
 
 def load(twitter_user):
+    # add the seed user
+    check_rate_limit()
+    user = api.get_user(screename=twitter_user)
+    add_user(user)
+
+    # add all of its followers
     for user in Cursor(api.followers, screen_name=twitter_user).items():
         check_rate_limit()
         user_uri = add_user(user)
 
-    for user_uri, nick in graph.subject_objects(predicate=foaf.nick):
+    # add the in network following relations
+    for user_uri, username in graph.subject_objects(predicate=sioc.name):
         try:
             check_rate_limit()
-            for friend_id in Cursor(api.friends_ids, screen_name=nick).items():
+            for friend_id in Cursor(api.friends_ids, screen_name=username).items():
                 friend_uri = id2uri(friend_id)
-                # only record in-network friendships
                 if friend_uri:
                     print user_uri, "follows", friend_uri
                     graph.add((user_uri, sioc.follows, friend_uri))
