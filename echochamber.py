@@ -67,24 +67,6 @@ def add_user(user, g, reload=False):
     logging.info("added %s" % uri)
     return uri
 
-def check_rate_limit():
-    global remaining_hits
-    if remaining_hits > 0:
-        return
-    while True:
-        rl = api.rate_limit_status()
-        if rl["remaining_hits"] == 0:
-            print rl["remaining_hits"]
-            reset_time = rl["reset_time_in_seconds"]
-            t = time.time()
-            secs = reset_time - int(t) 
-            logging.info("sleeping for %s seconds" % secs)
-            if secs > 0:
-                time.sleep(secs)
-        else:
-            remaining_hits = rl["remaining_hits"]
-            break
-
 def load(twitter_user):
     # name the graph for the assertions related to a particular user
     g = rdflib.Graph(G.store, twitter_uri(twitter_user))
@@ -108,11 +90,33 @@ def load(twitter_user):
                 if friend_uri:
                     logging.info("%s follows %s", user_uri, friend_uri)
                     g.add((user_uri, sioc.follows, friend_uri))
-        except TweepError:
-            logging.warn("unable to see friends for %s", user.screen_name)
+        except TweepError, e:
+            logging.warn("unable to see friends for %s: %s", user.screen_name, e)
 
     G.serialize(open(twitter_user + ".ttl", "w"), format="turtle")
     G.serialize(open(twitter_user + ".json", "w"), format="json-ld")
+
+def check_rate_limit():
+    global remaining_hits
+    while True:
+        if remaining_hits > 0:
+            break
+
+        rl = api.rate_limit_status()
+        remaining_hits = rl["remaining_hits"]
+
+        if remaining_hits == 0:
+            reset_time = rl["reset_time_in_seconds"]
+            t = time.time()
+            secs = reset_time - int(t) 
+            logging.info("sleeping for %s seconds" % secs)
+            if secs > 0:
+                time.sleep(secs)
+        else:
+            break
+
+    remaining_hits -= 1
+    return remaining_hits
 
 if __name__ == "__main__":
     twitter_user = sys.argv[1].strip()
