@@ -45,7 +45,7 @@
                     //.charge(-150)
                     .linkStrength(.5)
                     .gravity(0.5)
-                    .linkDistance(400)
+                    .linkDistance(450)
                     .size([width, height]);
 
                 var svg = d3.select("#chart").append("svg")
@@ -62,7 +62,7 @@
                         .data(json.links)
                         .enter().append("line")
                         .attr("class", "link")
-                        .style("stroke", "#111")
+                        .style("stroke", "#ccc")
                         .style("stroke-width", .4);
 
                     var node = svg.selectAll(".node")
@@ -71,14 +71,14 @@
                         .attr("class", "node")
                         .attr("r", function(d) {return 3 + .1 * d.followerCount})
                         .style("fill", function(d) {
-                            return "#777";
+                            return "#bbb";
                         })
                         .call(force.drag)
                         .on("mouseover", function() {force.stop();})
                         .on("mouseout", function() {force.start();});
 
                     node.append("title")
-                        .text(function(d) {return d.username + " " + d.weight});
+                        .text(function(d) {return d.username + " " + d.followerCount});
                     
                     force.on("tick", function() {
                         link.attr("x1", function(d) {return d.source.x})
