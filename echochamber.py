@@ -117,4 +117,4 @@ def load(twitter_user):
 if __name__ == "__main__":
     twitter_user = sys.argv[1].strip()
     load(twitter_user)
-    g.close()
+    G.close()
