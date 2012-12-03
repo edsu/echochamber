@@ -36,25 +36,29 @@ foaf = rdflib.Namespace("http://xmlns.com/foaf/0.1/")
 graph.bind("foaf", foaf)
 dct = rdflib.Namespace("http://purl.org/dc/terms/")
 graph.bind("dct", dct)
+sioc = rdflib.Namespace("http://rdfs.org/sioc/ns#")
+g.bind("sioc", sioc)
 
 def twitter_uri(screen_name):
     return rdflib.URIRef("http://twitter.com/" + screen_name)
 
-def twitter_id(id):
-    return rdflib.URIRef("info:twitter/" + str(id))
-
 def add_user(user):
     uri = twitter_uri(user.screen_name)
-    graph.add((uri, rdflib.RDF.type, foaf.Person))
-    graph.add((uri, foaf.name, rdflib.Literal(user.name)))
-    graph.add((uri, foaf.nick, rdflib.Literal(user.screen_name)))
-    graph.add((uri, dct.identifier, twitter_id(user.id)))
+    graph.add((uri, rdflib.RDF.type, sioc.UserAccount))
+    graph.add((uri, sioc.id, rdflib.Literal(user.id))
+    graph.add((uri, sioc.name rdflib.Literal(user.screen_name)))
+
+    person = rdflib.BNode()
+    graph.add((uri, sioc.account_of, person))
+    graph.add((person, foaf.name, rdflib.Literal(user.name)))
     if user.url:
-        graph.add((uri, foaf.homepage, rdflib.URIRef(user.url)))
+        graph.add((person, foaf.homepage, rdflib.URIRef(user.url)))
+
+    print "added %s" % uri
     return uri
 
 def id2uri(id):
-    return graph.value(None, dct.identifier, twitter_id(id))
+    return graph.value(None, sioc.id, rdflib.Literal(id))
 
 def check_rate_limit():
     rl = api.rate_limit_status()
@@ -65,17 +69,19 @@ def check_rate_limit():
         time.sleep(secs)
 
 def load(twitter_user):
-    check_rate_limit()
     for user in Cursor(api.followers, screen_name=twitter_user).items():
+        check_rate_limit()
         user_uri = add_user(user)
+
+    for user_uri, nick in graph.subject_objects(predicate=foaf.nick):
         try:
             check_rate_limit()
-            for friend_id in Cursor(api.friends_ids, screen_name=user.screen_name).items():
+            for friend_id in Cursor(api.friends_ids, screen_name=nick).items():
                 friend_uri = id2uri(friend_id)
                 # only record in-network friendships
                 if friend_uri:
-                    print user_uri, "knows", friend_uri
-                    graph.add((user_uri, foaf.knows, friend_uri))
+                    print user_uri, "follows", friend_uri
+                    graph.add((user_uri, sioc.follows, friend_uri))
         except TweepError:
             print "unable to see friends for ", user.screen_name
     graph.serialize(open(twitter_user + ".ttl", "w"), format="turtle")
